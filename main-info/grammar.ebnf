@@ -1,0 +1,33 @@
+Program = "start" Name "{" Declaration [{Declaration}] ListWithOper "}".
+Name = Id.
+Declaration = Type Id ";".
+ListWithOper = Operator ([{Operator}] | Label).
+
+Expression = Term {("+" | "-") Term}.
+Term = Multiplier {("*" | "/") Multiplier}.
+Multiplier = Id | Number | FixConst | InParentheses.
+
+Id	= Letter [{Letter |  Zero | NotZero}].
+Number = Zero | ([UnaryMinus] NotZero {NotZero| Zero}).
+Operator = (CondTransition | Cycle | VarInit | InitConst | Input | Output) ";".
+GoTo = "goto" Label.
+Relation = (Id | Expression) ComparisonSign (Id | Expression).
+Cycle = "for" "(" Type InitCycleTemp "by" InParentheses "while" Relation ")" "stc" "do" (Operator | Label) "enc".
+
+Input = "cin" ">>" Id.
+Output = "cout" "<<" (Expression | Id | Number).
+VarInit = Id "=" Expression.
+CondTransition = "if" "(" Relation ")" "then" GoTo.	
+
+Label = "@" Id.
+Type = "integer" "const".
+InitConst = Id "=" FixConst. 
+FixConst = [UnaryMinus] NotZero "." NotZero "E" ("+" | "-") Number. 
+InitCycleTemp = Id "=" Expression.
+UnaryMinus = "-".
+InParentheses = "(" Expression ")".
+BinaryOperator = "+" | "-" | "*" | "\".
+ComparisonSign = "<" | "<=" | "==" | "!=" | ">" | ">=".
+Zero = "0".
+NotZero = "1" | "2" | "3" | "4" | "5" | "6"| "7" | "8" | "9".
+Letter = "A" | "a" | "B" | "b" | "C" | "c" | "..." | "Z" | "z".

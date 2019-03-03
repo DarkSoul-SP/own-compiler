@@ -1,0 +1,17 @@
+start myprogram {
+integer num1;
+integer num2;
+integer num3;
+сonst forconst;
+@news 
+	forconst = 1.5E+24;
+	num1 = 12; 
+	num2 = -15; 
+	@mark1
+	num3 = num1 + num2;
+if(num1 < num3) then goto @mark1;
+for(integer temp = 0 by (temp + 12) while temp < num2) 
+stc
+	do num2 = num1 + 25;
+enc;
+}

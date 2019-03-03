@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<states>
+    <!-- програма -->
+    <state name="1">
+        <transitions>
+            <transition label="start">
+                <stack/>
+				<goto>2</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected 'start'"/>
+    </state>
+    <state name="2">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+                <goto>3</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected name of the program"/>
+    </state>
+    <state name="3">
+        <transitions>
+            <transition label="{">
+                <stack/>
+                <goto>4</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected '{' after name of the program"/>
+    </state>
+    <state name="4">
+        <transitions>
+            <transition label="const">
+                <stack/>
+                <goto>5</goto>
+            </transition>
+			<transition label="integer">
+                <stack/>
+                <goto>5</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected type."/>
+    </state>
+    <state name="5">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+                <goto>6</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected name."/>
+    </state>
+	<state name="6">
+        <transitions>
+            <transition label=";">
+                <stack/>
+                <goto>7</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expected ';'."/>
+    </state>
+    <state name="7">
+        <transitions>
+            <transition label="integer">
+                <stack/>
+                <goto>5</goto>
+            </transition>
+            <transition label="сonst">
+                <stack/>
+                <goto>5</goto>
+            </transition>
+        </transitions>
+        <incomparability>
+            <stack>8</stack>
+            <goto>10</goto>
+        </incomparability>
+    </state>
+    <state name="8">
+		<transitions>
+            <transition label="}">
+                <stack/>
+                <goto>9</goto>
+            </transition>
+        </transitions>
+        <incomparability>
+            <stack>8</stack>
+            <goto>10</goto>
+        </incomparability>
+    </state>
+    <state name="9">
+        <transitions/>
+        <incomparability error="exit"/>
+    </state>
+
+    <!-- оператор -->
+    <state name="10">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+                <goto>12</goto>
+            </transition>
+            <transition label="cin">
+                <stack/>
+                <goto>13</goto>
+            </transition>
+            <transition label="cout">
+                <stack/>
+                <goto>11</goto>
+            </transition>
+            <transition label="LAB">
+                <stack/>
+                <goto>33</goto>
+            </transition>
+            <transition label="for">
+                <stack/>
+                <goto>15</goto>
+            </transition>
+            <transition label="if">
+                <stack/>
+                <goto>27</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Operator expected"/>
+    </state>
+    <state name="12">
+        <transitions>
+            <transition label="=">
+                <stack>32</stack>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Assignment expected"/>
+    </state>
+	<state name="13">
+        <transitions>
+            <transition label="&gt;&gt;">
+                <stack/>
+                <goto>14</goto>
+            </transition>
+        </transitions>
+        <incomparability error="&quot;&gt;&gt;&quot; expected"/>
+    </state>
+	<state name="14">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+                <goto>32</goto>
+            </transition>
+        </transitions>
+        <incomparability error="IDN expected"/>
+    </state>
+	<state name="11">
+        <transitions>
+            <transition label="&lt;&lt;">
+                <stack>32</stack>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="&quot;&lt;&lt;&quot; expected"/>
+    </state>
+	<state name="15">
+        <transitions>
+            <transition label="(">
+                <stack/>
+                <goto>16</goto>
+            </transition>
+        </transitions>
+        <incomparability error="'(' expected"/>
+    </state>
+	<state name="16">
+        <transitions>
+            <transition label="integer">
+                <stack/>
+                <goto>17</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Type 'integer' expected"/>
+    </state>
+	<state name="17">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+                <goto>18</goto>
+            </transition>
+        </transitions>
+        <incomparability error="IDN expected"/>
+    </state>
+	<state name="18">
+        <transitions>
+            <transition label="=">
+                <stack>19</stack>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Assignment expected"/>
+    </state>
+	<state name="19">
+        <transitions>
+            <transition label="by">
+                <stack/>
+                <goto>20</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'by' expected"/>
+    </state>
+	<state name="20">
+        <transitions>
+            <transition label="(">
+                <stack>21</stack>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="'(' missed"/>
+    </state>
+	<state name="21">
+        <transitions>
+            <transition label=")">
+                <stack/>
+                <goto>22</goto>
+            </transition>
+        </transitions>
+        <incomparability error="')' expected"/>
+    </state>
+	<state name="22">
+        <transitions>
+            <transition label="while">
+                <stack>23</stack>
+                <goto>38</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'while' expected"/>
+    </state>
+	<state name="23">
+        <transitions>
+            <transition label=")">
+                <stack/>
+                <goto>24</goto>
+            </transition>
+        </transitions>
+        <incomparability error="')' expected"/>
+    </state>
+	<state name="24">
+        <transitions>
+            <transition label="stc">
+                <stack/>
+                <goto>25</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'stc' expected"/>
+    </state>
+	<state name="25">
+        <transitions>
+            <transition label="do">
+                <stack>26</stack>
+                <goto>10</goto>
+            </transition>
+        </transitions>
+        <incomparability error="'do' missed"/>
+    </state>
+	<state name="26">
+        <transitions>
+            <transition label="enc">
+                <stack/>
+                <goto>32</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'enc' expected"/>
+    </state>
+	<state name="27">
+        <transitions>
+            <transition label="(">
+                <stack>28</stack>
+                <goto>38</goto>
+            </transition>
+        </transitions>
+        <incomparability error="'(' missed"/>
+    </state>
+	<state name="28">
+        <transitions>
+            <transition label=")">
+                <stack/>
+                <goto>29</goto>
+            </transition>
+        </transitions>
+        <incomparability error="')' missed"/>
+    </state>
+	<state name="29">
+        <transitions>
+            <transition label="then">
+                <stack/>
+                <goto>30</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'then' missed"/>
+    </state>
+	<state name="30">
+        <transitions>
+            <transition label="goto">
+                <stack/>
+                <goto>31</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Keyword 'goto' missed"/>
+    </state>
+	<state name="31">
+        <transitions>
+            <transition label="LAB">
+                <stack/>
+                <goto>32</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Label expected"/>
+    </state>
+	<state name="32">
+        <transitions>
+            <transition label=";">
+                <stack/>
+                <goto>33</goto>
+            </transition>
+        </transitions>
+        <incomparability error="';' after statement expected"/>
+    </state>
+	<state name="33">
+        <transitions/>
+        <incomparability error="exit"/>
+    </state>
+	
+	<!-- Вираз -->
+    <state name="34">
+        <transitions>
+            <transition label="IDN">
+                <stack/>
+				<goto>36</goto>
+            </transition>
+			<transition label="CON">
+                <stack/>
+				<goto>36</goto>
+            </transition>
+			<transition label="(">
+                <stack>35</stack>
+				<goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Expression expected"/>
+    </state>
+	<state name="35">
+        <transitions>
+            <transition label=")">
+                <stack/>
+                <goto>36</goto>
+            </transition>
+        </transitions>
+        <incomparability error="')' after expression expected"/>
+    </state>
+	<state name="36">
+        <transitions>
+            <transition label="+">
+                <stack/>
+                <goto>34</goto>
+            </transition>
+			<transition label="-">
+                <stack/>
+                <goto>34</goto>
+            </transition>
+			<transition label="*">
+                <stack/>
+                <goto>34</goto>
+            </transition>
+			<transition label="/">
+                <stack/>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="exit"/>
+    </state>
+	
+	
+	<!-- Порівняння -->
+    <state name="38">
+        <transitions/>
+        <incomparability>
+			<stack>39</stack>
+			<goto>34</goto>
+		</incomparability>
+    </state>
+	<state name="39">
+        <transitions>
+            <transition label="==">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+			<transition label="!=">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+			<transition label="&lt;">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+			<transition label="&lt;=">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+			<transition label="&gt;">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+			<transition label="&gt;=">
+                <stack>40</stack>
+                <goto>34</goto>
+            </transition>
+        </transitions>
+        <incomparability error="Comparison sign expected"/>
+    </state>
+	<state name="40">
+        <transitions/>
+        <incomparability error="exit"/>
+    </state>
+</states>
