@@ -5,6 +5,7 @@
 .idea
 target/
 out/
+ExitFile.txt
 
 # Log file
 *.log

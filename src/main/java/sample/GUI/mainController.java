@@ -1,18 +1,17 @@
 package sample.GUI;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuButton;
+import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.*;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import sample.logic.MyCompiler;
-import javax.swing.*;
 
 public class mainController {
     @FXML
@@ -54,126 +53,114 @@ public class mainController {
     @FXML
     private MenuItem itemLabels;
 
+    private StringBuilder strException;
+
     @FXML
     void initialize() {
         load.setOnAction(event -> {
+            final FileChooser fileChooser = new FileChooser();
+            String inStr = null;
 
-            FileInputStream fis = null;
-            InputStreamReader input = null;
-            BufferedReader br = null;
-            String inStr = "";
+            fileChooser.setTitle("Load file");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("All Files", "*.*"),
+                    new FileChooser.ExtensionFilter("Text", "*.txt"),
+                    new FileChooser.ExtensionFilter("XML", "*.xml"));
 
-            JFileChooser choosedFile = new JFileChooser();
-            int ret = choosedFile.showDialog(null, "Select File");
-            if (ret == JFileChooser.APPROVE_OPTION) {
-                try
-                {
-                    File file = choosedFile.getSelectedFile();
-                    try {
-                        fis = new FileInputStream(file);
-                        input = new InputStreamReader(fis,"UTF-8");
+            File file = fileChooser.showOpenDialog(buttonAnalize.getScene().getWindow());
 
-                        int ch = 0;
-                        while ((ch = input.read()) != -1)
-                            inStr += (char)ch;
+            if (file != null) {
+                try {
+                    FileInputStream fis = new FileInputStream(file);
+                    InputStreamReader input = new InputStreamReader(fis, "UTF-8");
+                    inStr = "";
+                    int ch = 0;
+                    while ((ch = input.read()) != -1)
+                        inStr += (char) ch;
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            input.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                catch (Exception error)
-                {
-                    JOptionPane.showMessageDialog(null, "File not saved.");
+                    input.close();
+                    fis.close();
+                } catch (Exception error) {
+                    modalWindow("File was not load.");
                 }
             }
 
-            programArea.setText(inStr);
+            if(inStr != null) {
+                programArea.setText(inStr);
+            }
         });
 
         save.setOnAction(event -> {
-                    if (programArea.getText() == " " || programArea.getText() == "\t" || programArea.getText().isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "You not enter your program");
-                    } else {
-                        JFileChooser choosedFile = new JFileChooser();
-                        int ret = choosedFile.showDialog(null, "Select File");
-                        if (ret == JFileChooser.APPROVE_OPTION) {
-                            try {
-                                File file = choosedFile.getSelectedFile();
+            if (programArea.getText().trim().isEmpty()) {
+                modalWindow("Enter your program.");
+            } else {
+                final FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save file");
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("All Files", "*.*"),
+                        new FileChooser.ExtensionFilter("Text", "*.txt"),
+                        new FileChooser.ExtensionFilter("XML", "*.xml"));
 
-                                PrintWriter pw = null;
-                                try {
-                                    pw = new PrintWriter(file);
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                }
+                File file = fileChooser.showSaveDialog(buttonAnalize.getScene().getWindow());
 
-                                pw.print(programArea.getText());
-                                System.out.print("\n You saved file with text: " + programArea.getText());
-                                pw.close();
-                            } catch (Exception error) {
-                                JOptionPane.showMessageDialog(null, "File not saved.");
-                            }
-                        }
-                    }
-                });
+                if (file != null) {
+                    try {
+                        PrintWriter pw = new PrintWriter(file);
+                        pw.print(programArea.getText());
+
+                        pw.close();
+                    } catch (Exception error) {}
+                }else modalWindow("File was not saved.");
+            }
+        });
 
         buttonAnalize.setOnAction(event -> {
             MyCompiler ex = new MyCompiler();
-            String strException = new String();
+            ex.isWorking = false;
+            strException = new StringBuilder();
             exceptionsArea.clear();
 
-            if(programArea.getText() == " " || programArea.getText() == "\t" || programArea.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "You not enter your program");
+            if(programArea.getText().trim().isEmpty()) {
+                modalWindow("You not enter your program.");
             } else{
-                ex.setInputProgramText(programArea.getText());
+                ex.setInputProgramText(programArea.getText().trim());
                 ex.startLA();
                 ex.startSAA();
                 ex.isWorking = true;
             }
 
-            if(ex.isWorking){
-                for (String exception : ex.getSetWithException()
-                     ) {
-                    System.out.println(exception);
-                    strException += exception + "\n";
+            if(ex.isWorking && !ex.getSetWithException().isEmpty()){
+                for (String exception : ex.getSetWithException()) {
+                    strException
+                            .append(exception)
+                            .append("\n");
                 }
-                exceptionsArea.setText(strException);
-            }
+                exceptionsArea.setText(strException.toString());
+            } else if(ex.isWorking)exceptionsArea.setText("Analize uccessfully passed.");
         });
 
         itemLexems.setOnAction(event -> {
             if(MyCompiler.isWorking)
             openNewScene("/fxml/forTables/tableWithLexems.fxml");
-            else JOptionPane.showMessageDialog(null, "Your program was not analized.");
+            else modalWindow("Your program was not analized.");
         });
 
         itemIdentifiers.setOnAction(event -> {
             if(MyCompiler.isWorking)
             openNewScene("/fxml/forTables/tableWithId.fxml");
-            else JOptionPane.showMessageDialog(null, "Your program was not analized.");
+            else modalWindow("Your program was not analized.");
         });
 
         itemConsts.setOnAction(event -> {
             if(MyCompiler.isWorking)
             openNewScene("/fxml/forTables/tableWithConsts.fxml");
-            else JOptionPane.showMessageDialog(null, "Your program was not analized.");
+            else modalWindow("Your program was not analized.");
         });
 
         itemLabels.setOnAction(event -> {
             if(MyCompiler.isWorking)
             openNewScene("/fxml/forTables/tableWithLabels.fxml");
-            else JOptionPane.showMessageDialog(null, "Your program was not analized.");
+            else modalWindow("Your program was not analized.");
         });
 
         buttonClear.setOnAction(event -> {
@@ -188,7 +175,7 @@ public class mainController {
     }
 
     public void openNewScene (String window){
-        buttonClear.getScene().getWindow();
+        //buttonClear.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(window));
@@ -203,6 +190,24 @@ public class mainController {
         stage.setScene(new Scene(root));
         stage.setResizable(true);
         stage.showAndWait();
+    }
+
+    public void modalWindow(String message) {
+        Label label = new Label(message);
+        StackPane LayoutWithLabel = new StackPane();
+        LayoutWithLabel.getChildren().add(label);
+        Scene modalScene = new Scene(LayoutWithLabel, 400, 100);
+
+        Stage modalStage = new Stage();
+        modalStage.setTitle("Attention");
+        modalStage.setResizable(false);
+        modalStage.setScene(modalScene);
+        modalStage.initModality(Modality.WINDOW_MODAL);
+        modalStage.initOwner(buttonAnalize.getScene().getWindow());
+        modalStage.setX(buttonAnalize.getScene().getWindow().getX() + 100);
+        modalStage.setY(buttonAnalize.getScene().getWindow().getY() + 100);
+
+        modalStage.show();
     }
 }
 
